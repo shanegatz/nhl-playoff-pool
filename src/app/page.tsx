@@ -36,12 +36,6 @@ export default async function HomePage() {
           <Link href="/login" className="rounded bg-slate-900 px-4 py-2 text-white">
             Sign in
           </Link>
-          <Link
-            href="/signup"
-            className="rounded border border-slate-300 px-4 py-2"
-          >
-            Create account
-          </Link>
         </div>
       </main>
     );
