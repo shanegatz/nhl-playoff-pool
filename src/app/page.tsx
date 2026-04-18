@@ -5,6 +5,10 @@ type ScoreRow = {
   entry_id: string;
   user_id: string;
   entry_name: string;
+  points_r1: number;
+  points_r2: number;
+  points_r3: number;
+  points_r4: number;
   total_points: number;
 };
 
@@ -47,7 +51,7 @@ export default async function HomePage() {
   const [{ data: scores }, { data: teams }] = await Promise.all([
     supabase
       .from("entry_scores")
-      .select("entry_id,user_id,entry_name,total_points")
+      .select("entry_id,user_id,entry_name,points_r1,points_r2,points_r3,points_r4,total_points")
       .order("total_points", { ascending: false }),
     supabase
       .from("teams")
@@ -81,7 +85,11 @@ export default async function HomePage() {
               <tr className="border-b border-slate-300 text-left">
                 <th className="py-2">#</th>
                 <th className="py-2">Entry</th>
-                <th className="py-2 text-right">Points</th>
+                <th className="py-2 px-3 text-right">R1</th>
+                <th className="py-2 px-3 text-right">R2</th>
+                <th className="py-2 px-3 text-right">R3</th>
+                <th className="py-2 px-3 text-right">R4</th>
+                <th className="py-2 px-3 text-right font-semibold">Total</th>
                 <th className="py-2 text-right">Details</th>
               </tr>
             </thead>
@@ -100,7 +108,11 @@ export default async function HomePage() {
                       </span>
                     )}
                   </td>
-                  <td className="py-2 text-right font-mono">{row.total_points}</td>
+                  <td className="py-2 px-3 text-right font-mono text-slate-500">{row.points_r1}</td>
+                  <td className="py-2 px-3 text-right font-mono text-slate-500">{row.points_r2}</td>
+                  <td className="py-2 px-3 text-right font-mono text-slate-500">{row.points_r3}</td>
+                  <td className="py-2 px-3 text-right font-mono text-slate-500">{row.points_r4}</td>
+                  <td className="py-2 px-3 text-right font-mono font-semibold">{row.total_points}</td>
                   <td className="py-2 text-right">
                     <Link href={`/entry/${row.entry_id}`} className="underline">
                       view

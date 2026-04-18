@@ -9,7 +9,10 @@ export type Team = {
   name: string;
   abbr: string;
   conference: "East" | "West";
-  wins: number;
+  wins_r1: number;
+  wins_r2: number;
+  wins_r3: number;
+  wins_r4: number;
 };
 
 export type InitialRanking = {
@@ -79,6 +82,11 @@ export default function RankingForm({
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!isValid) return;
+    const lockDate = process.env.NEXT_PUBLIC_LOCK_DATE;
+    if (lockDate && new Date() >= new Date(lockDate)) {
+      setError("Entries are locked — the playoffs have started.");
+      return;
+    }
     setSaving(true);
     setError(null);
     setMessage(null);

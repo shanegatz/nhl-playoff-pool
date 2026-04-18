@@ -24,11 +24,11 @@ export default async function NewEntryPage() {
 
   const { data: teams } = await supabase
     .from("teams")
-    .select("id,name,abbr,conference,wins")
+    .select("id,name,abbr,conference,wins_r1,wins_r2,wins_r3,wins_r4")
     .order("conference", { ascending: true })
     .order("name", { ascending: true });
 
-  const teamList: Team[] = (teams ?? []) as Team[];
+  const teamList: Team[] = (teams ?? []) as unknown as Team[];
   const initialRankings: InitialRanking[] = [];
 
   const locked =

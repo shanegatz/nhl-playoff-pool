@@ -70,6 +70,10 @@ select
   e.id         as entry_id,
   e.user_id    as user_id,
   e.name       as entry_name,
+  coalesce(sum(er.rank * t.wins_r1 * 1), 0)::int as points_r1,
+  coalesce(sum(er.rank * t.wins_r2 * 2), 0)::int as points_r2,
+  coalesce(sum(er.rank * t.wins_r3 * 3), 0)::int as points_r3,
+  coalesce(sum(er.rank * t.wins_r4 * 4), 0)::int as points_r4,
   coalesce(sum(
     er.rank * (t.wins_r1 * 1 + t.wins_r2 * 2 + t.wins_r3 * 3 + t.wins_r4 * 4)
   ), 0)::int as total_points

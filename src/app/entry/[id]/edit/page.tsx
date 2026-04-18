@@ -27,7 +27,7 @@ export default async function EditEntryPage({
   const [{ data: teams }, { data: rankings }] = await Promise.all([
     supabase
       .from("teams")
-      .select("id,name,abbr,conference,wins")
+      .select("id,name,abbr,conference,wins_r1,wins_r2,wins_r3,wins_r4")
       .order("conference")
       .order("name"),
     supabase
@@ -36,7 +36,7 @@ export default async function EditEntryPage({
       .eq("entry_id", entry.id),
   ]);
 
-  const teamList: Team[] = (teams ?? []) as Team[];
+  const teamList: Team[] = (teams ?? []) as unknown as Team[];
   const initialRankings: InitialRanking[] = (rankings ?? []) as InitialRanking[];
 
   const locked =
