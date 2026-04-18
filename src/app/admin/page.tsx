@@ -1,14 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import TeamWinsEditor from "@/components/TeamWinsEditor";
-
-type Team = {
-  id: string;
-  name: string;
-  abbr: string;
-  conference: "East" | "West";
-  wins: number;
-};
+import TeamWinsEditor, { type Team } from "@/components/TeamWinsEditor";
 
 export const revalidate = 0;
 
@@ -41,15 +33,15 @@ export default async function AdminPage() {
 
   const { data: teams } = await supabase
     .from("teams")
-    .select("id,name,abbr,conference,wins")
+    .select("id,name,abbr,conference,wins_r1,wins_r2,wins_r3,wins_r4")
     .order("conference")
     .order("name");
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-8">
+    <main className="mx-auto max-w-4xl px-4 py-8">
       <h1 className="mb-4 text-2xl font-semibold">Admin — team wins</h1>
       <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
-        Update wins after each game. The leaderboard recalculates automatically.
+        Update wins per round. Points = rank × wins × round multiplier. The leaderboard recalculates automatically.
       </p>
       <TeamWinsEditor teams={(teams ?? []) as Team[]} />
     </main>

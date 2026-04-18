@@ -13,7 +13,10 @@ type Team = {
   name: string;
   abbr: string;
   conference: "East" | "West";
-  wins: number;
+  wins_r1: number;
+  wins_r2: number;
+  wins_r3: number;
+  wins_r4: number;
 };
 
 export const revalidate = 0;
@@ -48,8 +51,9 @@ export default async function HomePage() {
       .order("total_points", { ascending: false }),
     supabase
       .from("teams")
-      .select("id,name,abbr,conference,wins")
-      .order("wins", { ascending: false }),
+      .select("id,name,abbr,conference,wins_r1,wins_r2,wins_r3,wins_r4")
+      .order("conference")
+      .order("name"),
   ]);
 
   const rows: ScoreRow[] = scores ?? [];
@@ -111,19 +115,35 @@ export default async function HomePage() {
 
       <section>
         <h2 className="mb-3 text-xl font-semibold">Team wins</h2>
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-          {allTeams.map((t) => (
-            <div
-              key={t.id}
-              className="flex items-center justify-between rounded border border-slate-200 px-3 py-2 dark:border-slate-800"
-            >
-              <span>
-                <span className="font-mono text-xs text-slate-500">{t.abbr}</span>{" "}
-                {t.name}
-              </span>
-              <span className="font-mono">{t.wins}</span>
-            </div>
-          ))}
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-slate-300 text-left">
+                <th className="py-2 pr-4">Team</th>
+                <th className="py-2 px-3 text-center">R1 ×1</th>
+                <th className="py-2 px-3 text-center">R2 ×2</th>
+                <th className="py-2 px-3 text-center">R3 ×3</th>
+                <th className="py-2 px-3 text-center">R4 ×4</th>
+              </tr>
+            </thead>
+            <tbody>
+              {allTeams.map((t) => (
+                <tr
+                  key={t.id}
+                  className="border-b border-slate-200 dark:border-slate-800"
+                >
+                  <td className="py-2 pr-4">
+                    <span className="font-mono text-xs text-slate-500">{t.abbr}</span>{" "}
+                    {t.name}
+                  </td>
+                  <td className="py-2 px-3 text-center font-mono">{t.wins_r1}</td>
+                  <td className="py-2 px-3 text-center font-mono">{t.wins_r2}</td>
+                  <td className="py-2 px-3 text-center font-mono">{t.wins_r3}</td>
+                  <td className="py-2 px-3 text-center font-mono">{t.wins_r4}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
     </main>

@@ -18,7 +18,10 @@ create table public.teams (
   name        text not null unique,
   abbr        text not null unique,
   conference  text not null check (conference in ('East','West')),
-  wins        int  not null default 0 check (wins >= 0),
+  wins_r1     int  not null default 0 check (wins_r1 >= 0),
+  wins_r2     int  not null default 0 check (wins_r2 >= 0),
+  wins_r3     int  not null default 0 check (wins_r3 >= 0),
+  wins_r4     int  not null default 0 check (wins_r4 >= 0),
   updated_at  timestamptz not null default now()
 );
 
@@ -67,7 +70,9 @@ select
   e.id         as entry_id,
   e.user_id    as user_id,
   e.name       as entry_name,
-  coalesce(sum(er.rank * t.wins), 0)::int as total_points
+  coalesce(sum(
+    er.rank * (t.wins_r1 * 1 + t.wins_r2 * 2 + t.wins_r3 * 3 + t.wins_r4 * 4)
+  ), 0)::int as total_points
 from public.entries e
 left join public.entry_rankings er on er.entry_id = e.id
 left join public.teams t           on t.id       = er.team_id

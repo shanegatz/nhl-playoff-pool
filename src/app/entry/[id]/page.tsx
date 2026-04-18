@@ -6,8 +6,20 @@ export const revalidate = 0;
 
 type RankingRow = {
   rank: number;
-  teams: { id: string; name: string; abbr: string; wins: number } | null;
+  teams: {
+    id: string;
+    name: string;
+    abbr: string;
+    wins_r1: number;
+    wins_r2: number;
+    wins_r3: number;
+    wins_r4: number;
+  } | null;
 };
+
+function weightedWins(t: NonNullable<RankingRow["teams"]>) {
+  return t.wins_r1 * 1 + t.wins_r2 * 2 + t.wins_r3 * 3 + t.wins_r4 * 4;
+}
 
 export default async function EntryDetailPage({
   params,
@@ -29,14 +41,14 @@ export default async function EntryDetailPage({
 
   const { data: rankings } = await supabase
     .from("entry_rankings")
-    .select("rank, teams(id,name,abbr,wins)")
+    .select("rank, teams(id,name,abbr,wins_r1,wins_r2,wins_r3,wins_r4)")
     .eq("entry_id", params.id)
     .order("rank", { ascending: false });
 
   const rows: RankingRow[] = (rankings ?? []) as unknown as RankingRow[];
 
   const total = rows.reduce(
-    (sum, r) => sum + (r.teams ? r.rank * r.teams.wins : 0),
+    (sum, r) => sum + (r.teams ? r.rank * weightedWins(r.teams) : 0),
     0,
   );
 
@@ -87,9 +99,11 @@ export default async function EntryDetailPage({
                 </span>{" "}
                 {r.teams?.name}
               </td>
-              <td className="py-2 text-right font-mono">{r.teams?.wins ?? 0}</td>
               <td className="py-2 text-right font-mono">
-                {r.teams ? r.rank * r.teams.wins : 0}
+                {r.teams ? weightedWins(r.teams) : 0}
+              </td>
+              <td className="py-2 text-right font-mono">
+                {r.teams ? r.rank * weightedWins(r.teams) : 0}
               </td>
             </tr>
           ))}
